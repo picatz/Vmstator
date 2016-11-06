@@ -61,6 +61,12 @@ module Vmstator
       end
     end
 
+    # forks() will run the -f flag and return that
+    # data in a hash format
+    def forks
+      { :forks => `vmstat -f`.split.first }
+    end
+
     # parse() is probably the main work horse of this class. It parses the
     # the vmstat command after a dry run is done to check the command. It
     # does quite few things: including parsing all of the vmstat information
@@ -75,6 +81,9 @@ module Vmstator
     #  # => true
     #
     def parse
+      if @flags =~ /(-f|--forks)/
+        return forks
+      end
       dry_run
       @output = `vmstat #{@flags}`.split("\n")
       labels  = @output[1]
