@@ -9,9 +9,9 @@ module Vmstator
 	# result of that data.
 	class Stats
     # Comand-line Flags
-		attr_accessor :flags
+    attr_accessor :flags
     # Output of command and all parsed data
-		attr_reader :output, :data
+    attr_reader :output, :data
     # Parsed Data
 		attr_reader :r,    :runnable     # number of runnable processes
 		attr_reader :b,    :uninter      # number of processes in uninterruptible sleep
@@ -56,7 +56,7 @@ module Vmstator
 		# will raise a custom Vmstator::VmstatError
 		def dry_run
 			binding.pry
-      unless system("vmstat #{@flags} > /dev/null 2>&1")
+			unless system("vmstat #{@flags} > /dev/null 2>&1")
 				raise Vmstator::VmstatError.new("Vmstat ran into a problem with the flag(s): #{@flags}")
 			end
 		end
