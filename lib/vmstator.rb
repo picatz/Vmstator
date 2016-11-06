@@ -61,10 +61,26 @@ module Vmstator
       end
     end
 
-    # forks() will run the -f flag and return that
-    # data in a hash format
+    # forks() will run the -f flag and return that data
     def forks
-      { :forks => `vmstat -f`.split.first }
+      `vmstat -f`.split.first
+    end
+
+    # slab_info() will run the -m flag and return that data
+    def slab_info
+      # TODO : may go back, make this an option to use sudo or not.
+      # You need sudo permission to run this flag.
+      @slab_info = {}
+      `sudo vmstat -m`.split("\n").each do |info|
+        next if info == "Cache                       Num  Total   Size  Pages"
+        cache, num, total, size, pages = info.split
+        @slab_info[cache] = {}
+        @slab_info[cache][:num]   = num
+        @slab_info[cache][:total] = total
+        @slab_info[cache][:size]  = size
+        @slab_info[cache][:pages] = pages
+      end
+      @slab_info
     end
 
     # parse() is probably the main work horse of this class. It parses the
