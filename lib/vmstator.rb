@@ -8,25 +8,28 @@ module Vmstator
 	# flags for the vmstat command, and a way to access the
 	# result of that data.
 	class Stats
+    # Comand-line Flags
 		attr_accessor :flags
+    # Output of command and all parsed data
 		attr_reader :output, :data
-		attr_reader :r      # number of runnable processes
-		attr_reader :b      # number of processes in uninterruptible sleep
-		attr_reader :swpd   # amount of virtual memory used
-		attr_reader :free   # amount of idle memory
-		attr_reader :buff   # amount of memory used as buffers
-		attr_reader :cache  # amount of memory used as cache
-		attr_reader :si     # amount of memory swapped in from disk (/s)
-		attr_reader :so     # amount memory swapped to disk (/s)
-		attr_reader :bi     # blocks received from a block device (blocks/s)
-		attr_reader :bo     # blocks sent to a block device (blocks/s)
-		attr_reader :in     # number of interrupts (/s)
-		attr_reader :cs     # number of context switches (/s)
-		attr_reader :us     # time spent running non-kernel code
-		attr_reader :sy     # time spent running kernel code
-		attr_reader :id     # time spent idle
-		attr_reader :wa     # time spent waiting for IO
-		attr_reader :st     # time stolen from a virtual machine
+    # Parsed Data
+		attr_reader :r,    :runnable     # number of runnable processes
+		attr_reader :b,    :uninter      # number of processes in uninterruptible sleep
+		attr_reader :swpd, :used         # amount of virtual memory used
+		attr_reader :free, :free         # amount of idle memory
+		attr_reader :buff, :buffer       # amount of memory used as buffers
+		attr_reader :c,    :cache        # amount of memory used as cache
+		attr_reader :si,   :swapped_in   # amount of memory swapped in from disk (/s)
+		attr_reader :so,   :swapped_to   # amount memory swapped to disk (/s)
+		attr_reader :bi,   :blocs_recv   # blocks received from a block device (blocks/s)
+		attr_reader :bo,   :blocks_sent  # blocks sent to a block device (blocks/s)
+		attr_reader :in,   :interrupts   # number of interrupts (/s)
+		attr_reader :cs,   :cntxt_swtchs # number of context switches (/s)
+		attr_reader :us,   :non_kernel   # time spent running non-kernel code
+		attr_reader :sy,   :kernel       # time spent running kernel code
+		attr_reader :id,   :idle_time    # time spent idle
+		attr_reader :wa,   :waiting      # time spent waiting for IO
+		attr_reader :st,   :stolen       # time stolen from a virtual machine
 
 		# initialize() handles the initialization of a new
 		# Vmstator::Stats object which takes in an optional
@@ -77,23 +80,23 @@ module Vmstator
 			labels  = @output[1]
 			stats   = @output[2]
 			@data = Hash[labels.split.map(&:to_sym).zip stats.split]
-			@r     = @data[:r]
-			@b     = @data[:b]
-			@swpd  = @data[:swpd]
-			@free  = @data[:free]
-			@buff  = @data[:buff]
-			@cache = @data[:cache]
-			@si    = @data[:si]
-			@so    = @data[:so]
-			@bi    = @data[:bi]
-			@bo    = @data[:bo]
-			@in    = @data[:in]
-			@cs    = @data[:cs]
-			@us    = @data[:us]
-			@sy    = @data[:sy]
-			@id    = @data[:id]
-			@wa    = @data[:wa]
-			@st    = @data[:st]
+			@swpd, @used         = @data[:swpd],  @data[:swpd]
+			@buff, @buffer       = @data[:buff],  @data[:buff]
+			@r,    @runnable     = @data[:r],     @data[:r]
+			@b,    @uninter      = @data[:b],     @data[:b]
+			@si,   @swapped_in   = @data[:si],    @data[:si]
+			@so,   @swapped_to   = @data[:so],    @data[:so]
+			@bi,   @blocs_recv   = @data[:bi],    @data[:bi]
+			@bo,   @blocks_sent  = @data[:bo],    @data[:bo]
+			@in,   @interrupts   = @data[:in],    @data[:in]
+			@cs,   @cntxt_swtchs = @data[:cs],    @data[:cs]
+			@us,   @non_kernel   = @data[:us],    @data[:us]
+			@sy,   @kernel       = @data[:sy],    @data[:sy]
+			@id,   @idle_time    = @data[:id],    @data[:id]
+			@wa,   @waiting      = @data[:wa],    @data[:wa]
+			@st,   @stolen       = @data[:st],    @data[:st]
+			@cache               = @data[:cache]
+			@free                = @data[:free]
 			true
 		end
 
