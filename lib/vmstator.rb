@@ -55,7 +55,6 @@ module Vmstator
     # dry_run() runs the vmstat command with the available flags or
     # will raise a custom Vmstator::VmstatError
     def dry_run
-      binding.pry
       unless system("vmstat #{@flags} > /dev/null 2>&1")
         raise Vmstator::VmstatError.new("Vmstat ran into a problem with the flag(s): #{@flags}")
       end
@@ -89,7 +88,7 @@ module Vmstator
       @disk_info[:disk_count] = output.count
       output.each do |line|
         disk, total, merged, sectors, ms, total, merged, sectors, ms, cur, sec = line.split
-        @disk_info[disk.to_sym] = { :totoal => total, :merged = > merged, :sectors => sectors,
+        @disk_info[disk.to_sym] = { :totoal => total, :merged => merged, :sectors => sectors,
                                     :ms => ms,        :cur => cur,        :sec => sec }
       end
       @disk_info
