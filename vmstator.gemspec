@@ -6,7 +6,7 @@ require 'vmstator/version'
 Gem::Specification.new do |spec|
   spec.name          = "vmstator"
   spec.version       = Vmstator::VERSION
-  spec.authors       = ["Kent Gruber"]
+  spec.authors       = ["Kent 'picat' Gruber"]
   spec.email         = ["kgruber1@emich.edu"]
 
   spec.summary       = %q{Vmstator is a Ruby API for vmstat to monitor virtual memory statistics.}
