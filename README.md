@@ -10,14 +10,6 @@ This gem is still in development, but has more or less working code! :)
 
 ## Installation
 
-### Gem Install
-
-Since this is a gem, to install it is straightforward:
-
-```
-$ ( sudo ) gem install vmstator
-```
-
 ### Gemfile
 
 Add this line to your application's Gemfile:
@@ -29,6 +21,8 @@ gem 'vmstator'
 And then execute:
 
     $ bundle
+
+### Gem Install
 
 Or install it yourself as:
 
