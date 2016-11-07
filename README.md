@@ -8,6 +8,8 @@ This gem is still in development, but has more or less working code! :)
 
 ![screenshot](http://i.imgur.com/spjIhpy.png "Screen Shot")
 
+![screenshot2](http://i.imgur.com/D9TNIpY.png "Screen Shot2")
+
 ## Installation
 
 ### Gemfile
