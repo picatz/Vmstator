@@ -81,6 +81,7 @@ module Vmstator
     # informatio from that command.
     def disk_info
       @disk_info = {}
+      @disk_info[:disks] = {}
       output = `vmstat -d`.split("\n")
       # remove first two lines of the output
       output.shift
@@ -88,8 +89,8 @@ module Vmstator
       @disk_info[:disk_count] = output.count
       output.each do |line|
         disk, total, merged, sectors, ms, total, merged, sectors, ms, cur, sec = line.split
-        @disk_info[disk.to_sym] = { :totoal => total, :merged => merged, :sectors => sectors,
-                                    :ms => ms,        :cur => cur,        :sec => sec }
+        @disk_info[:disks][disk] = { :totoal => total, :merged => merged, :sectors => sectors,
+                                     :ms => ms,        :cur => cur,       :sec => sec }
       end
       @disk_info
     end 
@@ -97,7 +98,7 @@ module Vmstator
     # event_counter_statistics() will return the event
     # count statistics in the form of a hash
     def event_counter_statistics(flags=@flags)
-      output = `vmstat #{flags}`.split("\n")  
+      output = `vmstat #{flags}` 
       keys   = output.split(/\d/).compact.join.split("\n").map(&:strip)
       values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
       Hash[keys.zip values]
