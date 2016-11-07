@@ -61,9 +61,47 @@ module Vmstator
       end
     end
 
-    # forks() will run the -f flag and return that data
+    # forks() will run the -f flag and return that data.
     def forks
       `vmstat -f`.split.first
+    end
+    
+    # active() will parse the results of active
+    #  and inactive memory information.
+    def active
+      parse("-a") 
+    end
+
+    # version() will run the -V flag and return the version
+    # number from that information.
+    def vmstat_version
+      `vmstat -V`.split.last
+    end
+
+    # version() will run the -d flag and return the parsed
+    # informatio from that command.
+    def disk_info
+      @disk_info = {}
+      output = `vmstat -d`.split("\n")
+      # remove first two lines of the output
+      output.shift
+      output.shift
+      @disk_info[:disk_count] = output.count
+      output.each do |line|
+        disk, total, merged, sectors, ms, total, merged, sectors, ms, cur, sec = line.split
+        @disk_info[disk.to_sym] = { :totoal => total, :merged = > merged, :sectors => sectors,
+                                    :ms => ms,        :cur => cur,        :sec => sec }
+      end
+      @disk_info
+    end 
+
+    # event_counter_statistics() will return the event
+    # count statistics in the form of a hash
+    def event_counter_statistics(flags=@flags)
+      output = `vmstat #{flags}`.split("\n")  
+      keys   = output.split(/\d/).compact.join.split("\n").map(&:strip)
+      values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
+      Hash[keys.zip values]
     end
 
     # slab_info() will run the -m flag and return that data
@@ -96,12 +134,16 @@ module Vmstator
     #  vmstats.parse
     #  # => true
     #
-    def parse
-      if @flags =~ /(-f|--forks)/
+    def parse(flags=@flags)
+      if flags =~ /(-d|--disk)/
+        return disk_statistics
+      elsif flags =~ /(-f|--forks)/
         return forks
+      elsif flags =~ /(-s|--stats)/
+        return event_counter_statistics
       end
       dry_run
-      @output = `vmstat #{@flags}`.split("\n")
+      @output = `vmstat #{flags}`.split("\n")
       labels  = @output[1]
       stats   = @output[2]
       @data = Hash[labels.split.map(&:to_sym).zip stats.split]
