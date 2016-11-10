@@ -1,7 +1,6 @@
 module Vmstator
 
   class Disk
-    # attrs for each attribute
     attr_reader :ms
     attr_reader :cur
     attr_reader :sec

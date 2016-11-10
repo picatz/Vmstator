@@ -1,5 +1,7 @@
 require "vmstator/errors"
 require "vmstator/version"
+require "vmstator/stats"
+require "vmstator/memory"
 require "vmstator/active"
 require "vmstator/average"
 require "vmstator/cache"
@@ -64,7 +66,7 @@ module Vmstator
     end
 
     # active() will run the -a flag and return the data
-    def active(flag="")
+    def active(flags="")
       output = `vmstat #{flags}`.split("\n")
       labels = output[1]
       stats  = output[2]

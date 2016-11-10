@@ -1,7 +1,6 @@
 module Vmstator
 
   class Cache
-    # attrs for each attribute
     attr_reader :num
     attr_reader :name
     attr_reader :size
