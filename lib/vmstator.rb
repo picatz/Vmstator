@@ -17,6 +17,7 @@ require "vmstator/version"
 module Vmstator
 
   class Parser
+    
     # parse() parses the the vmstat command 
     # with optional vmstat command-line flags
     # which is passed in as a string
@@ -67,7 +68,7 @@ module Vmstator
 
     # active() will run the -a flag and return the data
     def active(flags=false)
-      flags = "-a" unless flags
+      flags  = "-a" unless flags
       output = `vmstat #{flags}`.split("\n")
       labels = output[1]
       stats  = output[2]
@@ -106,7 +107,7 @@ module Vmstator
     end
 
     # disk_statistics() will run the -d flag and return that data.
-    def disk_statistics(flags="")
+    def disk_statistics(flags=false)
       flags      = "-d" unless flags
       disk_stats = Vmstator::DiskStatistics.new
       output     = `vmstat #{flags}`.split("\n")
@@ -115,25 +116,31 @@ module Vmstator
       output.shift
       output.each do |line|
         name, total, merged, sectors, ms, total, merged, sectors, ms, cur, sec = line.split
-        data = {:name => name, :totoal => total.to_i, :merged => merged.to_i, :sectors => sectors.to_i,
-                :ms => ms.to_i,     :cur => cur.to_i,      :sec => sec.to_i }
+        data = { :name => name, 
+                 :totoal => total.to_i, 
+                 :merged => merged.to_i, 
+                 :sectors => sectors.to_i,
+                 :ms => ms.to_i,     
+                 :cur => cur.to_i,      
+                 :sec => sec.to_i }
         disk_stats.update(data)
       end
       disk_stats
     end
 
     # slab_info() will run the -m flag and return that data
-    def slab_info(flags="")
-      flags = "-m" unless flags
-      # TODO : may go back, make this an option to use sudo or not.
-      # You need sudo permission to run this flag.
-      flags = "-m" if flags.empty?
+    def slab_info(flags=false)
+      raise VmstatError("This must be run with root privileges!") unless Process.uid == 0
+      flags     = "-m" unless flags
       slab_info = Vmstator::SlabInfo.new 
       `sudo vmstat #{flags}`.split("\n").each do |info|
         next if info == "Cache                       Num  Total   Size  Pages"
         name, num, total, size, pages = info.split
-        data = { :name => name, :num => num.to_i, :total => total.to_i,
-                 :size => size.to_i,  :pages => pages.to_i }
+        data = { :name => name, 
+                 :num => num.to_i, 
+                 :total => total.to_i,
+                 :size => size.to_i,  
+                 :pages => pages.to_i }
         slab_info.update(data)
       end
       slab_info

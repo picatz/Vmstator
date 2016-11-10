@@ -18,13 +18,13 @@ module Vmstator
 
     def update(data)
       if data
-        @ms      = data[:ms]      if data[:ms]
-        @cur     = data[:cur]     if data[:cur]
-        @sec     = data[:sec]     if data[:sec]
-        @name    = data[:name]    if data[:name]
-        @total   = data[:total]   if data[:total]
-        @merged  = data[:merged]  if data[:merged]
-        @sectors = data[:sectors] if data[:sectors]
+        @ms      = data[:ms]      
+        @cur     = data[:cur]     
+        @sec     = data[:sec]
+        @name    = data[:name]
+        @total   = data[:total]   
+        @merged  = data[:merged]  
+        @sectors = data[:sectors] 
       else
         return false
       end

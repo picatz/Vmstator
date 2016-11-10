@@ -6,9 +6,7 @@ Vmstator is a Ruby API for [vmstat](https://en.wikipedia.org/wiki/Vmstat). It pr
 
 This gem is still in development, but has more or less working code! :)
 
-![screenshot](http://i.imgur.com/spjIhpy.png "Screen Shot")
-
-![screenshot2](http://i.imgur.com/D9TNIpY.png "Screen Shot2")
+![screenshot](http://imgur.com/a/eMpO2 "Screen Shot")
 
 ## Installation
 
@@ -39,18 +37,62 @@ Still working on this bit, but, for the mean time...
 ```ruby
 require 'vmstator'
 
-vmstats = Vmstator::Stats.new
-vmstats.flags = "-S M"
-vmstats.parse
+parser = Vmstator::Parser.new
 
-puts vmstats.data
-puts vmstats.buffer
-puts vmstats.cache
-puts vmstats.forks
-puts vmstats.active
-puts vmstats.disk_info
-puts vmstats.event_counter_statistics
-puts vmstats.slab_info
+# Parse command-line arguments to vmstat.
+parser.parse("-a")
+
+# Access the command-line arguments directly as methods.
+parser.active
+
+# Other Vmstator methods for vmstat:
+parser.active
+parser.average  
+parser.disk_statistics  
+parser.disk_summary  
+parser.event_counter_statistics  
+parser.forks  
+parser.parse  
+parser.slab_info  
+parser.version
+
+# If returns a Vmstator object, for example, for active memory "-a" ...
+active_memory = parser.active
+
+# Example, the available methods to access data about Vmstator::ActiveMemory objects.
+active_memory.blocks_recv  
+active_memory.buffer  
+active_memory.cntxt_swtchs  
+active_memory.idle_time   
+active_memory.kernel      
+active_memory.runnable  
+active_memory.swapped_in  
+active_memory.uninter  
+active_memory.used   
+active_memory.blocks_sent  
+active_memory.cache   
+active_memory.free          
+active_memory.interrupts  
+active_memory.non_kernel  
+active_memory.stolen    
+active_memory.swapped_to  
+active_memory.update   
+active_memory.waiting
+
+# Types of Vmstator objects:
+ActiveMemory   
+Cache  
+DiskStatistics  
+EventCounterStatistics  
+Memory  
+SlabInfo  
+AverageMemory  
+Disk   
+DiskSummary     
+Parser  
+Stats     
+VmstatError
+
 ```
 
 ## License
