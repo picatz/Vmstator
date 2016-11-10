@@ -77,14 +77,14 @@ module Vmstator
 
     # event_counter_statistics() will run the -s flag and return the data 
     def event_counter_statistics(flags=false)
-      flags = "-s" unless flags
+      flags  = "-s" unless flags
       output = `vmstat #{flags}` 
-      values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
+      values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip).map(&:to_i)
       keys   = output.split(/\d/).compact.join.split("\n").map(&:strip)
-      keys.map(&:downcase).map { |s| 
-         s.gsub(" ", "_")}.map { |s| 
-         s.gsub("-", "_")}.map { |s| 
-         s.gsub(/\b(\w){1}_{1}/, "") }.map(&:to_sym)
+      keys   = keys.map(&:downcase).map { |s| 
+                  s.gsub(" ", "_")}.map { |s| 
+                  s.gsub("-", "_")}.map { |s| 
+                  s.gsub(/\b(\w){1}_{1}/, "") }.map(&:to_sym)
       data = Hash[keys.zip values]
       Vmstator::EventCounterStatistics.new(data)
     end
