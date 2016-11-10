@@ -4,7 +4,7 @@ Vmstator is a Ruby API for [vmstat](https://en.wikipedia.org/wiki/Vmstat). It pr
 
 ## Screen Shot
 
-![screenshot](http://i.imgur.com/RKs36Pa.png "Screen Shot")
+![screenshot](http://i.imgur.com/q5WkVhQ.png "Screen Shot")
 
 ## Installation
 
