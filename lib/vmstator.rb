@@ -61,7 +61,7 @@ module Vmstator
       output = `vmstat #{flags}`.split("\n")
       labels = output[1]
       stats  = output[2]
-      data   = Hash[labels.split.map(&:to_sym).zip stats.split]
+      data   = Hash[labels.split.map(&:to_sym).zip stats.split.map(&:to_i)]
       Vmstator::AverageMemory.new(data)
     end
 
@@ -71,7 +71,7 @@ module Vmstator
       output = `vmstat #{flags}`.split("\n")
       labels = output[1]
       stats  = output[2]
-      data   = Hash[labels.split.map(&:to_sym).zip stats.split]
+      data   = Hash[labels.split.map(&:to_sym).zip stats.split.map(&:to_i)]
       Vmstator::ActiveMemory.new(data)
     end
 
@@ -81,9 +81,9 @@ module Vmstator
       output = `vmstat #{flags}` 
       values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
       keys   = output.split(/\d/).compact.join.split("\n").map(&:strip)
-      keys.map(&:downcase).map {|s| 
-         s.gsub(" ", "_")}.map {|s| 
-         s.gsub("-", "_")}.map {|s| 
+      keys.map(&:downcase).map { |s| 
+         s.gsub(" ", "_")}.map { |s| 
+         s.gsub("-", "_")}.map { |s| 
          s.gsub(/\b(\w){1}_{1}/, "") }.map(&:to_sym)
       data = Hash[keys.zip values]
       Vmstator::EventCounterStatistics.new(data)
@@ -91,14 +91,12 @@ module Vmstator
 
     # disk_summary() will run the -D flag and return the data
     def disk_summary(flags=false)
-      flags = "-D" unless flags
+      flags  = "-D" unless flags
       output = `vmstat #{flags}` 
-      values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
+      values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip).map(&:to_i)
       keys   = output.split(/\d/).compact.join.split("\n").map(&:strip) 
-      keys.map(&:downcase).map {|s| 
-         s.gsub(" ", "_")}.map {|s| 
-         s.gsub("-", "_")}.map {|s|}.map(&:to_sym)
-      data = Hash[keys.zip values]
+      keys   = keys.map(&:downcase).map {|s| s.gsub(" ", "_")}.map(&:to_sym)
+      data   = Hash[keys.zip values]
       Vmstator::DiskSummary.new(data)
     end 
 
@@ -109,9 +107,9 @@ module Vmstator
 
     # disk_statistics() will run the -d flag and return that data.
     def disk_statistics(flags="")
-      flags = "-d" unless flags
+      flags      = "-d" unless flags
       disk_stats = Vmstator::DiskStatistics.new
-      output = `vmstat #{flags}`.split("\n")
+      output     = `vmstat #{flags}`.split("\n")
       # remove first line of the output
       output.shift
       output.shift

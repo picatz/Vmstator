@@ -5,6 +5,7 @@ module Vmstator
     attr_reader :caches
 
     def initialize(data=false)
+      @caches = []
       if data
         update(data)
       end
