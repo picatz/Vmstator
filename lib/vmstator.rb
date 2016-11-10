@@ -102,7 +102,7 @@ module Vmstator
 
     # forks() will run the -f flag and return that data.
     def forks
-      `vmstat -f`.split.first
+      `vmstat -f`.split.first.to_i
     end
 
     # disk_statistics() will run the -d flag and return that data.
