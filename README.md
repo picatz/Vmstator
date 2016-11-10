@@ -6,7 +6,7 @@ Vmstator is a Ruby API for [vmstat](https://en.wikipedia.org/wiki/Vmstat). It pr
 
 This gem is still in development, but has more or less working code! :)
 
-![screenshot](http://imgur.com/a/eMpO2 "Screen Shot")
+![screenshot](http://i.imgur.com/YvQXevs.png "Screen Shot")
 
 ## Installation
 
