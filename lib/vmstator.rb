@@ -77,24 +77,26 @@ module Vmstator
     # event_counter_statistics() will run the -s flag and return the data 
     def event_counter_statistics(flags="")
       output = `vmstat #{flags}` 
+      values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
       keys   = output.split(/\d/).compact.join.split("\n").map(&:strip)
-      # this looks silly. but I kind'a like it
       keys.map(&:downcase).map {|s| 
          s.gsub(" ", "_")}.map {|s| 
          s.gsub("-", "_")}.map {|s| 
          s.gsub(/\b(\w){1}_{1}/, "") }.map(&:to_sym)
-      values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
-      data   = Hash[keys.zip values]
-      Vmstator::DiskSummary.new(data)
+      data = Hash[keys.zip values]
+      Vmstator::EventCounterStatistics.new(data)
     end
 
     # disk_summary() will run the -D flag and return the data
     def disk_summary(flags="")
       output = `vmstat #{flags}` 
+      values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
       keys   = output.split(/\d/).compact.join.split("\n").map(&:strip) 
       keys.map(&:downcase).map {|s| 
          s.gsub(" ", "_")}.map {|s| 
          s.gsub("-", "_")}.map {|s|}.map(&:to_sym)
+      data = Hash[keys.zip values]
+      Vmstator::DiskSummary.new(data)
     end 
 
     # forks() will run the -f flag and return that data.
@@ -122,7 +124,7 @@ module Vmstator
     def slab_info(flags="")
       # TODO : may go back, make this an option to use sudo or not.
       # You need sudo permission to run this flag.
-      slab_info = Vstator::SlabInfo.new 
+      slab_info = Vmstator::SlabInfo.new 
       `sudo vmstat #{flags}`.split("\n").each do |info|
         next if info == "Cache                       Num  Total   Size  Pages"
         name, num, total, size, pages = info.split
