@@ -1,4 +1,3 @@
-require 'pry'
 require "vmstator/errors"
 require "vmstator/version"
 require "vmstator/stats"
@@ -57,7 +56,7 @@ module Vmstator
       `vmstat -V`.split.last
     end
 
-    # slab_info() will run the -m flag and return that data
+    # average() will run the command normally and return the data
     def average(flags="")
       output = `vmstat #{flags}`.split("\n")
       labels = output[1]
@@ -67,7 +66,8 @@ module Vmstator
     end
 
     # active() will run the -a flag and return the data
-    def active(flags="")
+    def active(flags=false)
+      flags = "-a" unless flags
       output = `vmstat #{flags}`.split("\n")
       labels = output[1]
       stats  = output[2]
@@ -76,7 +76,8 @@ module Vmstator
     end
 
     # event_counter_statistics() will run the -s flag and return the data 
-    def event_counter_statistics(flags="")
+    def event_counter_statistics(flags=false)
+      flags = "-s" unless flags
       output = `vmstat #{flags}` 
       values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
       keys   = output.split(/\d/).compact.join.split("\n").map(&:strip)
@@ -89,15 +90,14 @@ module Vmstator
     end
 
     # disk_summary() will run the -D flag and return the data
-    def disk_summary(flags="")
+    def disk_summary(flags=false)
+      flags = "-D" unless flags
       output = `vmstat #{flags}` 
       values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
       keys   = output.split(/\d/).compact.join.split("\n").map(&:strip) 
-      binding.pry
       keys.map(&:downcase).map {|s| 
          s.gsub(" ", "_")}.map {|s| 
          s.gsub("-", "_")}.map {|s|}.map(&:to_sym)
-      binding.pry
       data = Hash[keys.zip values]
       Vmstator::DiskSummary.new(data)
     end 
@@ -109,6 +109,7 @@ module Vmstator
 
     # disk_statistics() will run the -d flag and return that data.
     def disk_statistics(flags="")
+      flags = "-d" unless flags
       disk_stats = Vmstator::DiskStatistics.new
       output = `vmstat #{flags}`.split("\n")
       # remove first line of the output
@@ -125,8 +126,10 @@ module Vmstator
 
     # slab_info() will run the -m flag and return that data
     def slab_info(flags="")
+      flags = "-m" unless flags
       # TODO : may go back, make this an option to use sudo or not.
       # You need sudo permission to run this flag.
+      flags = "-m" if flags.empty?
       slab_info = Vmstator::SlabInfo.new 
       `sudo vmstat #{flags}`.split("\n").each do |info|
         next if info == "Cache                       Num  Total   Size  Pages"
