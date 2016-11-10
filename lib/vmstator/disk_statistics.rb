@@ -5,6 +5,7 @@ module Vmstator
     attr_reader :disks
 
     def initialize(data=false)
+      @disks = []
       if data
         update(data)
       end

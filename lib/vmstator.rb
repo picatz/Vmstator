@@ -1,3 +1,4 @@
+require 'pry'
 require "vmstator/errors"
 require "vmstator/version"
 require "vmstator/stats"
@@ -92,9 +93,11 @@ module Vmstator
       output = `vmstat #{flags}` 
       values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip)
       keys   = output.split(/\d/).compact.join.split("\n").map(&:strip) 
+      binding.pry
       keys.map(&:downcase).map {|s| 
          s.gsub(" ", "_")}.map {|s| 
          s.gsub("-", "_")}.map {|s|}.map(&:to_sym)
+      binding.pry
       data = Hash[keys.zip values]
       Vmstator::DiskSummary.new(data)
     end 
