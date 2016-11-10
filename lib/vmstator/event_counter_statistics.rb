@@ -1,6 +1,6 @@
 module Vmstator
 
-  class EvenCounterStatistics
+  class EventCounterStatistics
     attr_reader :total_memory
     attr_reader :used_memory
     attr_reader :active_memory

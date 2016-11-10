@@ -1,6 +1,6 @@
 module Vmstator
 
-  class Parser
+ class Parser
     # parse() parses the the vmstat command 
     # with optional vmstat command-line flags
     # which is passed in as a string
