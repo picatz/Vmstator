@@ -2,6 +2,10 @@
 
 Vmstator is a Ruby API for [vmstat](https://en.wikipedia.org/wiki/Vmstat). It provides an [OO](https://www.tutorialspoint.com/ruby/ruby_object_oriented.htm) interface to be able to parse the contents of the output of vmstat and access that infromation intuitively.
 
+#### Supported Platforms
+
+Currently working on / testing on Debian GNU/Linux 8  
+
 ## Screen Shot
 
 ![screenshot](http://i.imgur.com/q5WkVhQ.png "Screen Shot")
