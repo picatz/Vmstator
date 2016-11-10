@@ -23,7 +23,6 @@ module Vmstator
       if data
         @runnable     = data[:r]
         @uninter      = data[:b]
-        @cache        = data[:c]
         @swapped_in   = data[:si] 
         @swapped_to   = data[:so] 
         @blocks_recv  = data[:bi] 
@@ -37,7 +36,12 @@ module Vmstator
         @stolen       = data[:st] 
         @used         = data[:swpd] 
         @free         = data[:free] 
-        @buffer       = data[:buff] 
+        @cache        = data[:cache]
+        if self.is_a? AverageMemory
+          @buffer = data[:buff]
+        else
+          @buffer = false    
+        end
       else
         return false
       end
