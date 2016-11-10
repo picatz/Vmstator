@@ -10,7 +10,6 @@ require "vmstator/disk_statistics"
 require "vmstator/disk_summary"
 require "vmstator/errors"
 require "vmstator/event_counter_statistics"
-require "vmstator/forks"
 require "vmstator/slab_info"
 require "vmstator/version"
 
