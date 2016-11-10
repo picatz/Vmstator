@@ -36,10 +36,11 @@ module Vmstator
         @stolen       = data[:st] 
         @used         = data[:swpd] 
         @free         = data[:free] 
-        @cache        = data[:cache]
         if self.is_a? AverageMemory
+          @cache  = data[:cache]
           @buffer = data[:buff]
         else
+          @cache  = false    
           @buffer = false    
         end
       else
