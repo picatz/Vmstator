@@ -16,11 +16,11 @@ module Vmstator
 
     def update(data)
       if data
-        @num   = data[:num].to_i
+        @num   = data[:num]
         @name  = data[:name]
-        @sec   = data[:size].to_i 
-        @total = data[:total].to_i
-        @pages = data[:pages].to_i
+        @sec   = data[:size]
+        @total = data[:total]
+        @pages = data[:pages]
       else
         return false
       end

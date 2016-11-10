@@ -115,8 +115,8 @@ module Vmstator
       output.shift
       output.each do |line|
         name, total, merged, sectors, ms, total, merged, sectors, ms, cur, sec = line.split
-        data = {:name => name, :totoal => total, :merged => merged, :sectors => sectors,
-                :ms => ms,     :cur => cur,      :sec => sec }
+        data = {:name => name, :totoal => total.to_i, :merged => merged.to_i, :sectors => sectors.to_i,
+                :ms => ms.to_i,     :cur => cur.to_i,      :sec => sec.to_i }
         disk_stats.update(data)
       end
       disk_stats
@@ -132,8 +132,8 @@ module Vmstator
       `sudo vmstat #{flags}`.split("\n").each do |info|
         next if info == "Cache                       Num  Total   Size  Pages"
         name, num, total, size, pages = info.split
-        data = { :name => name, :num => num, :total => total,
-                 :size => size,  :pages => pages }
+        data = { :name => name, :num => num.to_i, :total => total.to_i,
+                 :size => size.to_i,  :pages => pages.to_i }
         slab_info.update(data)
       end
       slab_info
