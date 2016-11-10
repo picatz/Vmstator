@@ -116,7 +116,7 @@ module Vmstator
       output.each do |line|
         name, total, merged, sectors, ms, total, merged, sectors, ms, cur, sec = line.split
         data = { :name => name, 
-                 :totoal => total.to_i, 
+                 :total => total.to_i, 
                  :merged => merged.to_i, 
                  :sectors => sectors.to_i,
                  :ms => ms.to_i,     
