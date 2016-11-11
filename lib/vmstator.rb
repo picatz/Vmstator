@@ -1,17 +1,16 @@
 require "vmstator/errors"
 require "vmstator/version"
 require "vmstator/stats"
-require "vmstator/memory"
-require "vmstator/active"
-require "vmstator/average"
-require "vmstator/cache"
-require "vmstator/disk"
-require "vmstator/disk_statistics"
-require "vmstator/disk_summary"
-require "vmstator/errors"
-require "vmstator/event_counter_statistics"
-require "vmstator/slab_info"
-require "vmstator/version"
+require "vmstator/macos/pages"
+require "vmstator/linux/memory"
+require "vmstator/linux/active"
+require "vmstator/linux/average"
+require "vmstator/linux/cache"
+require "vmstator/linux/disk"
+require "vmstator/linux/disk_statistics"
+require "vmstator/linux/disk_summary"
+require "vmstator/linux/event_counter_statistics"
+require "vmstator/linux/slab_info"
 
 module Vmstator
 
@@ -21,35 +20,54 @@ module Vmstator
     # with optional vmstat command-line flags
     # which is passed in as a string
     def parse(flags=false)
-      if flags 
-        if flags =~ /(-d|--disk)/
-          # parse instances of disk_statistics
-          return disk_statistics(flags)
-        elsif flags =~ /(-D|--disk-sum)/
-          # parse instances of disk summary
-          return disk_summary(flags)
-        elsif flags =~ /(-a|--active)/
-          # parse instances of active memory
-          return active(flags)
-        elsif flags =~ /(-m|--slabs)/
-          # parse instances of slab info
-          return slab_info(flags)
-        elsif flags =~ /(-f|--forks)/
-          # parse instances of forks
-          return forks
-        elsif flags =~ /(-s|--stats)/
-          # parse instances of event counter statistics
-          return event_counter_statistics(flags)
-        elsif flags =~ /(-V|--version)/
-          # parse instances of version
-          return version
-        else
-          # parse instances of the typical, average things
-          return average(flags)
-        end
+      if RUBY_PLATFORM =~ /darwin/i
+        return parse_macos
+      elsif RUBY_PLATFORM =~ /linux/i
+        return parse_linux(flags) 
+      elsif RUBY_PLATFORM =~ /win32|win64|\.NET|windows|cygwin|mingw32/i
+        raise Vmstator::VmstatError.new("This platform is not supported. Yet!?")
       else
-        return average
+        raise Vmstator::VmstatError.new("Unable to parse vmstat on this platform!")
       end
+    end
+
+    def parse_linux(flags=false)
+      if flags =~ /(-d|--disk)/
+        # parse instances of disk_statistics
+        return disk_statistics(flags)
+      elsif flags =~ /(-D|--disk-sum)/
+        # parse instances of disk summary
+        return disk_summary(flags)
+      elsif flags =~ /(-a|--active)/
+        # parse instances of active memory
+        return active(flags)
+      elsif flags =~ /(-m|--slabs)/
+        # parse instances of slab info
+        return slab_info(flags)
+      elsif flags =~ /(-f|--forks)/
+        # parse instances of forks
+        return forks
+      elsif flags =~ /(-s|--stats)/
+        # parse instances of event counter statistics
+        return event_counter_statistics(flags)
+      elsif flags =~ /(-V|--version)/
+        # parse instances of version
+        return version
+      else
+         flags ? average(flags) : average
+      end
+    end
+
+    def parse_macos
+      output = `vm_stat`.split("\n")
+      output.shift
+      data = {}
+      output.each do |line|
+        key, value = line.split(':').map(&:strip)  
+        key        = key.downcase.gsub(" ", "_").gsub("-", "_").gsub('"', '').to_sym
+        data[key]  = value.to_i
+      end
+      Vmstator::MacOSPages.new(data)
     end
 
     def version
@@ -94,7 +112,7 @@ module Vmstator
       flags  = "-D" unless flags
       output = `vmstat #{flags}` 
       values = output.split(/[A-z]/).compact.join.split("\n").map(&:strip).map(&:to_i)
-      keys   = output.split(/\d/).compact.join.split("\n").map(&:strip) 
+      kecys   = output.split(/\d/).compact.join.split("\n").map(&:strip) 
       keys   = keys.map(&:downcase).map {|s| s.gsub(" ", "_")}.map(&:to_sym)
       data   = Hash[keys.zip values]
       Vmstator::DiskSummary.new(data)
@@ -129,7 +147,7 @@ module Vmstator
 
     # slab_info() will run the -m flag and return that data
     def slab_info(flags=false)
-      raise VmstatError("This must be run with root privileges!") unless Process.uid == 0
+      raise Vmstator::VmstatError.new("This must be run with root privileges!") unless Process.uid == 0
       flags     = "-m" unless flags
       slab_info = Vmstator::SlabInfo.new 
       `sudo vmstat #{flags}`.split("\n").each do |info|
