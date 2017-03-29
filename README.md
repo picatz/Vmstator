@@ -20,22 +20,6 @@ Recently added support for the osx/macOS command `vm_stat`.
 
 ## Installation
 
-### Gemfile
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'vmstator'
-```
-
-And then execute:
-
-    $ bundle
-
-### Gem Install
-
-Or install it yourself as:
-
     $ gem install vmstator
 
 ## Usage
